@@ -5,7 +5,14 @@ import Image from 'next/image';
 import { Lock, User, ArrowRight, CheckCircle2, BarChart3, Sparkles, Shield, Mail } from 'lucide-react';
 import Link from 'next/link';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/wp-json';
+const getApiBase = () => {
+  let url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/wp-json';
+  if (!url.endsWith('/wp-json')) {
+    url = url.replace(/\/$/, '') + '/wp-json';
+  }
+  return url;
+};
+const API_BASE = getApiBase();
 
 export default function Login() {
   const [isSignUp, setIsSignUp] = useState(false);

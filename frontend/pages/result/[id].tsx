@@ -5,7 +5,14 @@ import { CheckCircle2, XCircle, AlertTriangle, BookOpen, Brain, Activity, ArrowL
 import Link from 'next/link';
 import AppShell from '../../components/AppShell';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/wp-json';
+const getApiBase = () => {
+  let url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/wp-json';
+  if (!url.endsWith('/wp-json')) {
+    url = url.replace(/\/$/, '') + '/wp-json';
+  }
+  return url;
+};
+const API_BASE = getApiBase();
 
 export default function Result() {
   const router = useRouter();

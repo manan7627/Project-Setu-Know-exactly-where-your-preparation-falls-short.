@@ -4,7 +4,14 @@ import { motion } from 'framer-motion';
 import { Send, FileText, Settings, ShieldCheck, BookOpen, Brain, Sparkles } from 'lucide-react';
 import AppShell from '../components/AppShell';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/wp-json';
+const getApiBase = () => {
+  let url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/wp-json';
+  if (!url.endsWith('/wp-json')) {
+    url = url.replace(/\/$/, '') + '/wp-json';
+  }
+  return url;
+};
+const API_BASE = getApiBase();
 
 export default function Analyze() {
   const [content, setContent] = useState('');
