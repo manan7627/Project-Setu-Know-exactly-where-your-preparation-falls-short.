@@ -1,0 +1,35 @@
+# Dependencies
+frontend/node_modules/
+wordpress/wp-content/upgrade/
+wordpress/wp-content/cache/
+
+# Next.js Build Output
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# Typescript
+frontend/next-env.d.ts
+frontend/*.tsbuildinfo
+
+# Environment & Private Configuration
+frontend/.env*
+!frontend/.env.example
+
+# WordPress Uploads
+wordpress/wp-content/uploads/
+
+# SQLite Journal and Temporary files
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Misc Logs & System Files
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+wp-cli.phar
