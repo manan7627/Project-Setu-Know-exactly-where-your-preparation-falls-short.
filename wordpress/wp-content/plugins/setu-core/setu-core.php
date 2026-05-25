@@ -10,6 +10,18 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// 0. Handle CORS preflight and headers globally for headless API
+add_action( 'init', 'setu_handle_cors' );
+function setu_handle_cors() {
+    header( "Access-Control-Allow-Origin: *" );
+    header( "Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE" );
+    header( "Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With" );
+    if ( isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS' ) {
+        status_header( 200 );
+        exit;
+    }
+}
+
 // 1. Register Custom Post Type and Meta
 add_action( 'init', 'setu_register_post_type_and_meta' );
 function setu_register_post_type_and_meta() {
