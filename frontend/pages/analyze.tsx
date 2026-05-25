@@ -6,10 +6,11 @@ import AppShell from '../components/AppShell';
 
 const getApiBase = () => {
   let url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/wp-json';
-  if (!url.endsWith('/wp-json')) {
-    url = url.replace(/\/$/, '') + '/wp-json';
+  url = url.replace(/\/$/, '');
+  if (url.includes('/wp-json') || url.includes('rest_route=')) {
+    return url;
   }
-  return url;
+  return url + '/index.php?rest_route=';
 };
 const API_BASE = getApiBase();
 
