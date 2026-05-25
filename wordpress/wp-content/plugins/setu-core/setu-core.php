@@ -39,6 +39,13 @@ add_action( 'rest_api_init', function () {
         'permission_callback' => '__return_true',
     ) );
 
+    // Register Endpoint
+    register_rest_route( 'setu/v1', '/register', array(
+        'methods'  => 'POST',
+        'callback' => 'setu_api_register',
+        'permission_callback' => '__return_true',
+    ) );
+
     // Submit Endpoint
     register_rest_route( 'setu/v1', '/submit', array(
         'methods'  => 'POST',
@@ -101,6 +108,37 @@ function setu_api_login( $request ) {
         'token'   => $token,
         'user_id' => $user->ID,
         'username'=> $user->user_login
+    ) );
+}
+
+function setu_api_register( $request ) {
+    $params = $request->get_json_params();
+    $username = sanitize_user( $params['username'] ?? '' );
+    $email = sanitize_email( $params['email'] ?? '' );
+    $password = $params['password'] ?? '';
+
+    if ( empty( $username ) || empty( $email ) || empty( $password ) ) {
+        return new WP_Error( 'missing_fields', 'Please fill in all fields', array( 'status' => 400 ) );
+    }
+
+    if ( username_exists( $username ) ) {
+        return new WP_Error( 'username_taken', 'Username is already taken', array( 'status' => 400 ) );
+    }
+
+    if ( email_exists( $email ) ) {
+        return new WP_Error( 'email_taken', 'Email is already registered', array( 'status' => 400 ) );
+    }
+
+    $user_id = wp_create_user( $username, $password, $email );
+    if ( is_wp_error( $user_id ) ) {
+        return new WP_Error( 'registration_failed', $user_id->get_error_message(), array( 'status' => 500 ) );
+    }
+
+    $token = setu_generate_token( $user_id );
+    return rest_ensure_response( array(
+        'token'   => $token,
+        'user_id' => $user_id,
+        'username'=> $username
     ) );
 }
 

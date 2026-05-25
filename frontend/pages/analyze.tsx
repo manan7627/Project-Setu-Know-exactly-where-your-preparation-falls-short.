@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { Send, FileText, Settings, ShieldCheck, BookOpen, Brain, Sparkles } from 'lucide-react';
 import AppShell from '../components/AppShell';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/wp-json';
+
 export default function Analyze() {
   const [content, setContent] = useState('');
   const [targetExam, setTargetExam] = useState('Engineering_Aptitude');
@@ -19,7 +21,7 @@ export default function Analyze() {
     setIsSubmitting(true);
     const token = localStorage.getItem('setu_token');
     try {
-      const res = await fetch('http://localhost:8080/wp-json/setu/v1/submit', {
+      const res = await fetch(`${API_BASE}/setu/v1/submit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ content, target_exam: targetExam })

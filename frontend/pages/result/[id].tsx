@@ -5,6 +5,8 @@ import { CheckCircle2, XCircle, AlertTriangle, BookOpen, Brain, Activity, ArrowL
 import Link from 'next/link';
 import AppShell from '../../components/AppShell';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/wp-json';
+
 export default function Result() {
   const router = useRouter();
   const { id } = router.query;
@@ -16,7 +18,7 @@ export default function Result() {
     if (!id) return;
     const token = localStorage.getItem('setu_token');
     try {
-      const res = await fetch(`http://localhost:8080/wp-json/setu/v1/results/${id}`, { headers: { 'Authorization': `Bearer ${token}` } });
+      const res = await fetch(`${API_BASE}/setu/v1/results/${id}`, { headers: { 'Authorization': `Bearer ${token}` } });
       if (res.status === 404) { setError('Result not found.'); return; }
       const json = await res.json();
       setData(json);

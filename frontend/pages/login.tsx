@@ -2,32 +2,40 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Lock, User, ArrowRight, CheckCircle2, BarChart3, Sparkles, Shield } from 'lucide-react';
+import { Lock, User, ArrowRight, CheckCircle2, BarChart3, Sparkles, Shield, Mail } from 'lucide-react';
 import Link from 'next/link';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/wp-json';
+
 export default function Login() {
+  const [isSignUp, setIsSignUp] = useState(false);
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+
+    const endpoint = isSignUp ? `${API_BASE}/setu/v1/register` : `${API_BASE}/setu/v1/login`;
+    const payload = isSignUp ? { username, email, password } : { username, password };
+
     try {
-      const res = await fetch('http://localhost:8080/wp-json/setu/v1/login', {
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
       if (res.ok && data.token) {
         localStorage.setItem('setu_token', data.token);
         router.push('/dashboard');
       } else {
-        setError(data.message || 'Invalid credentials');
+        setError(data.message || (isSignUp ? 'Registration failed' : 'Invalid credentials'));
         setIsLoading(false);
       }
     } catch (err) {
@@ -79,7 +87,7 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Right Panel — Login Form */}
+      {/* Right Panel — Login/Register Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
@@ -92,8 +100,12 @@ export default function Login() {
             <span className="font-bold text-lg">Setu</span>
           </div>
 
-          <h1 className="text-2xl font-extrabold tracking-tight mb-2">Welcome back</h1>
-          <p className="text-gray-500 mb-8">Enter your credentials to access your dashboard.</p>
+          <h1 className="text-2xl font-extrabold tracking-tight mb-2">
+            {isSignUp ? 'Create your account' : 'Welcome back'}
+          </h1>
+          <p className="text-gray-500 mb-8">
+            {isSignUp ? 'Start identifying your knowledge gaps in seconds.' : 'Enter your credentials to access your dashboard.'}
+          </p>
 
           {error && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl mb-6 text-sm font-medium flex items-center space-x-2">
@@ -102,7 +114,7 @@ export default function Login() {
             </motion.div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">Username</label>
               <div className="relative">
@@ -110,6 +122,17 @@ export default function Login() {
                 <input type="text" className="input-field pl-10" placeholder="admin" value={username} onChange={e => setUsername(e.target.value)} required />
               </div>
             </div>
+            
+            {isSignUp && (
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Address</label>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input type="email" className="input-field pl-10" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
+                </div>
+              </div>
+            )}
+
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
               <div className="relative">
@@ -122,13 +145,17 @@ export default function Login() {
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-brand-200 border-t-brand-600 rounded-full animate-spin" />
               ) : (
-                <>Sign In <ArrowRight className="w-4 h-4 ml-2" /></>
+                <>{isSignUp ? 'Create Account' : 'Sign In'} <ArrowRight className="w-4 h-4 ml-2" /></>
               )}
             </button>
           </form>
 
           <p className="text-center text-sm text-gray-400 mt-8">
-            Don't have an account? <Link href="/" className="text-brand-600 font-semibold hover:underline">Get started</Link>
+            {isSignUp ? (
+              <>Already have an account? <button type="button" onClick={() => { setIsSignUp(false); setError(''); }} className="text-brand-600 font-semibold hover:underline bg-transparent border-0 p-0 cursor-pointer">Sign in</button></>
+            ) : (
+              <>Don't have an account? <button type="button" onClick={() => { setIsSignUp(true); setError(''); }} className="text-brand-600 font-semibold hover:underline bg-transparent border-0 p-0 cursor-pointer">Create account</button></>
+            )}
           </p>
         </motion.div>
       </div>

@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { FileText, Award, Calendar, ChevronRight, Activity, Plus, Target, TrendingUp, Brain, Clock } from 'lucide-react';
 import AppShell from '../components/AppShell';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/wp-json';
+
 export default function Dashboard() {
   const [submissions, setSubmissions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -13,7 +15,7 @@ export default function Dashboard() {
   useEffect(() => {
     const token = localStorage.getItem('setu_token');
     if (!token) { router.push('/login'); return; }
-    fetch('http://localhost:8080/wp-json/setu/v1/results', {
+    fetch(`${API_BASE}/setu/v1/results`, {
       headers: { 'Authorization': `Bearer ${token}` }
     })
     .then(res => res.json())
