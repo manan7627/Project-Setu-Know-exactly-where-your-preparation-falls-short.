@@ -35,7 +35,7 @@ The frontend is built using Next.js, optimizing for fast page builds and a premi
 
 ### Core Pages
 1. **Landing Page (`/`):** A comprehensive introduction containing a Hero, a simulated dashboard preview card, a 3-step "How it Works" guide, a 9-part Capabilities grid, a side-by-side comparison chart, supported exam domains, a collapsible accordion FAQ, and a footer.
-2. **Login Page (`/login`):** A professional, split-screen login layout with a product presentation panel on the left and a validation form on the right.
+2. **Login & Registration Page (`/login`):** A professional, split-screen layout with a product presentation panel on the left, and a form on the right that toggles between Sign In and Sign Up (Create Account) modes.
 3. **Dashboard Page (`/dashboard`):** Provides a visual summary of preparation progress with score cards, quick-link domain shortcuts, and a paginated table of past submissions showing real-time processing statuses.
 4. **Analyze Page (`/analyze`):** A workspace where users select target exam domains (e.g., UPSC, GATE), paste their study notes or essays, track their word count, and submit for grading.
 5. **Results Page (`/result/[id]`):** Displays the analysis breakdown, featuring:
@@ -72,6 +72,7 @@ To authenticate headless requests securely without standard session cookies, `se
 ### API Endpoints
 All routes are registered under the `setu/v1` namespace:
 - **`POST /login`:** Authenticates credentials and returns the secure token.
+- **`POST /register`:** Creates a new user account in SQLite and returns the secure token.
 - **`POST /submit`:** Saves a new submission post, marks it `pending`, schedules a background cron event, and returns the post ID.
 - **`GET /results`:** Returns a list of past submissions for the current authenticated user.
 - **`GET /results/{id}`:** Fetches the full score, critique, gaps list, and mock test for a specific submission.

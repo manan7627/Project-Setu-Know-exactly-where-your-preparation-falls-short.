@@ -114,6 +114,7 @@ Tokens are verified on the backend using the local WordPress `SECURE_AUTH_KEY` t
 | Endpoint | Method | Auth Required | Description |
 | :--- | :--- | :--- | :--- |
 | `/wp-json/setu/v1/login` | `POST` | No | Validates user credentials; returns JWT-like bearer token. |
+| `/wp-json/setu/v1/register` | `POST` | No | Registers a new user account and returns an auth token. |
 | `/wp-json/setu/v1/submit` | `POST` | Yes | Saves content, marks status as `pending`, and initiates background grading. |
 | `/wp-json/setu/v1/results` | `GET` | Yes | Returns a list of past assessments (IDs, scores, exam categories). |
 | `/wp-json/setu/v1/results/{id}` | `GET` | Yes | Retrieves full score details, evaluation text, skill gaps, and generated MCQs. |
